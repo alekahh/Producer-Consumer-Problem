@@ -99,6 +99,40 @@ We used two semaphores – for parent and child respectively. The parent needs t
 We used char * text_files[] array to hold the entries for each file, the traverseDir uses a loop to find all the .txt files. We used two semaphores to achieve synchronization between parent and child processes. The signal to use sem_child can be obtained only from the parent and the signal to use sem_parent can be obtained only from the child, so synchronization is achieved. The termination of the child process happens when the parent writes “THIS IS THE END” string into the shared memory and signals the child to read it. The parent loop ends when all the bytes in all the files have been read.  About the shared_mem[0] and shared_mem[1]. The first shared_mem[0] is set to ‘1’ everytime a buffer is completely filled. This is to indicate to the child that this is not the end of the file, so the total count should be decremented by one. We need to do this because the wordCount function adds 1 at the end to count the last word, but if the word count is interrupted in the middle of the word because the buffer is filled, this word will be counted twice. shared_mem[1] is set to ‘1’ because we need the special case when shared_mem[0] is ‘1’ but it is in fact the end of the file, so the total count should be incremented by one.
 
 
+## Problem 3
+
+In Problem 2, both the parent and child processes have only one thread. When the given directory contains many text files, or the text files have a large size of content, it would be inefficient. In this problem, you are asked to extend your program implemented in Problem 2 with multi-threaded programming. You should implement this program into a source file named as problem3.c.
+
+You can compile the files based on the provided Makefile (you may modify it before using it for this problem) following this command: 
+
+```bash
+make 
+```
+or you can directly use the following command: 
+
+```bash
+gcc problem1.c helpers.c -o problem3 -I. -pthread 
+```
+After compiling, you can run the executable file to test your program with the provided test cases, by typing command: 
+```bash
+./problem3 <source_dir> 
+```
+
+## Problem requirements:
+
+The requirements for this problem are same as those in Problem 2, except that the child process should be implemented with multiple threads to count the words of each text file based on POSIX thread. Your solution should comply with the following requirements: 
+1. You should use 4 threads in the child process.
+2. You must call the provided wordCount() function to count the number of words. Please do not modify the implementation of wordCount() function.
+3.  When all text files have been counted, the child process should write the total number of words in all text files into a text file (must be “p3_result.txt” for this problem) by calling the saveResult(). 
+
+
+## Implemented Solution:
+
+To parallelize the word counting operation with multiple threads in the child process we created four threads; each thread is allocated ¼ of the shared memory. They all count the words in parallel in their parts then after all threads are finished executing, the summation of their results is added to the total word count. <br />
+We also used shared_mem[0] and shared_mem[1] for interrupted counting of the words due to the buffer being filled similarly to problem2, you can refer to problem2’s last paragraph for a more detailed explanation.<br />
+We used a new struct with 3 int parameters, start,end, and word_count. The start and end are for determining which substring of shared memory the thread needs to count the words in. The word_count is the number of words in their respective substrings. The multi_thread function initializes the threads with their start and end values and countes the word_count. The thread_func is a thread function that counts the words in each respective thread.
+
+
 
 
 
