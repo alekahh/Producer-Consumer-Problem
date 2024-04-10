@@ -10,7 +10,7 @@ In this project I implement three programs to solve Problem 1, Problem 2, and Pr
 
 
 
-#Problem 1
+## Problem 1
 
 This problem aims to understand how the shared memory and semaphores are used between processes based on problem1.c. 
 In this question, I implement all my code into multi_threads_run() function.
@@ -46,7 +46,7 @@ If everything goes well, run the executable file with command:
 8. Your program should accept two command-line parameters. For example, you should run your program with the command line: ./problem1 <input_param> <num_of_operations>. The first parameter is an eight-digit decimal number. The second parameter is used to control the number of times for executing the addition operation for each thread, i.e., each thread should execute the addition operation for several times, depending on this parameter. 
 9. Once a thread is created or once it finishes an addition operation, it must try to lock the semaphores immediately until it finishes all the addition operations. 
 10. When all eight child threads finish their calculations, the master thread should write the modified eight-digit decimal number into a text file by calling the saveResult() function, which is located in helper.h. The function has two input parameters, i.e., the name of the text file (must be p1_result.txt for Problem 1) and an int type number, such as the modified eight- digit decimal number for Problem 1. 
-11. Please use the semaphore to achieve the mutual exclusion when the threads execute addition operations on the digits. Any other mechanisms to achieve this are not allowed and will be graded with zero points. 
+11. Please use the semaphore to achieve the mutual exclusion when the threads execute addition operations on the digits. A
 
 
 
@@ -59,5 +59,6 @@ The sem_trywait function avoids deadlocks, but the possibility of livelock appea
 First, I used no preemption design to avoid deadlocks and random delay to avoid livelocks.
 Then, I created an array pthread_t threads[8] tread[i] corresponding to thread i+1 in the project requirements (it can increment i and i+1 digits). Afterwards, I used global array digits[8] where digits[i] are the digits of i. array semaphores[8] is used to hold the semaphores for each corresponding digit (semaphores[i] for digits[I]). I initialized the threads and semaphores in the multi_thread function.
 
-#Problem 2
+## Problem 2
+
 
